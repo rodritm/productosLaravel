@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\Product;
+use Illuminate\Http\Request; //esto se debe importar para llamar al método Request que permite almacenar en la base de datos
+use App\Product; //esto siempre se debe importar para guardar los cambios en el modelo deseado
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,7 +18,9 @@ Route::get('/', function () {
 });
 
 Route::get('products', function () {
-    return view('products.index');
+    //$products = Product::all();
+    $products = Product::orderby('created_at','desc')->get();
+    return view('products.index',compact('products'));
 })->name('products.index');
 
 Route::get('products/create', function () {
@@ -30,4 +32,5 @@ Route::post('products', function (Request $request) {
      $newProduct -> description = $request -> input('description'); //el input('description') nos permite obtener lo que se haya puesto en el html en el campo con nombre description 
      $newProduct -> price = $request -> input('price'); 
      $newProduct -> save();
+     return redirect() -> route('products.index') -> with('info','Producto creado exitosamente');
 })->name('products.store');
